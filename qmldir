@@ -1,0 +1,2 @@
+singleton Config 1.0 config/Config.qml
+singleton NotificationArea 1.0 modules/notifications/NotificationArea.qml
