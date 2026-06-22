@@ -58,9 +58,10 @@ Singleton {
         actionRecording: root._actionRecording
         active: root._active
 
-        onSelectedRegion: (globalX, globalY, w, h, screen, localX, localY) => {
+        onSelectedRegion: (globalX, globalY, w, h, screen, localX, localY, directlyToClipboard) => {
             root._active = false
             const geo = `${Math.round(globalX)},${Math.round(globalY)} ${Math.round(w)}x${Math.round(h)}`
+
             if ( root._actionRecording ) {
                 root._recordingScreen = screen
                 root._recordingLocalX = localX
@@ -71,8 +72,18 @@ Singleton {
                 console.log("SCROT-CMD[VIDEO]: " + recorderProcess.command)
                 recorderProcess.running = true
                 root.isRecording = true
+
             } else {
-                const command = ["bash", "-c", `grim -g "${geo}" - | satty --filename - ${Config.screenshot.satty_parameters}`]
+                var command = "";
+
+                // directlyToClipboard => skip satty & send image directly to clipboard (shortcut)
+                if( directlyToClipboard ) {
+                    command = ["bash", "-c", `grim -g "${geo}" - | wl-copy -t image/png`]
+
+                } else {
+                    command = ["bash", "-c", `grim -g "${geo}" - | satty --filename - ${Config.screenshot.satty_parameters}`]
+                }
+
                 console.log("SCROT-CMD[IMAGE]: " + command)
                 Quickshell.execDetached(command)
             }

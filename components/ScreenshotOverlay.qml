@@ -20,7 +20,7 @@ PanelWindow {
     // regionSelected -> user has manually selected some region (either click-and-drag or a window)
     // outputSelected -> usesr has selected whole screen
     // cancelled -> Self explainatory
-    signal regionSelected(real globalX, real globalY, real w, real h, var screen, real localX, real localY)
+    signal regionSelected(real globalX, real globalY, real w, real h, var screen, real localX, real localY, bool directlyToClipboard)
     signal outputSelected(string screenName)
     signal cancelled()
 
@@ -277,11 +277,18 @@ PanelWindow {
         z: 3
         focus: true
 
-        Keys.onReturnPressed: confirmCapture()
-        Keys.onEnterPressed:  confirmCapture() // numpad enter too!
+        Keys.onReturnPressed: confirmCapture( false )
+        Keys.onEnterPressed:  confirmCapture( false ) // numpad enter too!
         Keys.onEscapePressed: overlay.cancelled()
 
-        function confirmCapture() {
+        Keys.onPressed: (event) => {
+            if (event.key === Qt.Key_C && (event.modifiers & Qt.ControlModifier)) {
+                confirmCapture( true )
+                event.accepted = true
+            }
+        }
+
+        function confirmCapture( directToClipboard: bool ) {
             if( !sel.hasSelection ) return;
 
             dimRectangle.visible = false
@@ -296,7 +303,8 @@ PanelWindow {
                      overlay.vOriginY + sel.normY,
                      sel.normW, sel.normH,
                      overlay.targetScreen,
-                     sel.normX, sel.normY)
+                     sel.normX, sel.normY,
+                     directToClipboard)
                     })
 
         }
@@ -341,13 +349,13 @@ PanelWindow {
             color: Config.appearance.color_fg
             font.pixelSize: Config.appearance.font_size
             text: {
-                const verb = overlay.actionRecording ? "start recording" : "grab"
+                const verb = overlay.actionRecording ? "start recording" : "grab & annotate"
                 if( overlay.isDragging )
                     return `Release to set selection  ~  Right-click to cancel`
                 if( overlay.hasDragResult && sel.hasSelection )
-                    return `Enter to ${verb}  ~  Drag to reselect  ~  Esc / Right-click to cancel`
+                    return `Enter to ${verb}  ~  CTRL+C to place selection directly to clipboard  ~  Drag to reselect  ~  Esc / Right-click to cancel`
                 if( overlay.hoveredClient )
-                    return `Enter to ${verb} window  ~  Drag for custom area  ~  Esc / Right-click to cancel`
+                    return `Enter to ${verb} window  ~  CTRL+C to place directly to clipboard  ~  Drag for custom area  ~  Esc / Right-click to cancel`
                 return `Hover over a window or drag to select area  ~  Esc / Right-click to cancel`
             }
         }

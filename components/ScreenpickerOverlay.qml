@@ -14,7 +14,7 @@ Variants {
     property bool active: false
     property bool actionRecording: false
 
-    signal selectedRegion(real globalX, real globalY, real w, real h, var screen, real localX, real localY)
+    signal selectedRegion(real globalX, real globalY, real w, real h, var screen, real localX, real localY, bool directlyToClipboard)
     signal selectedMonitor(string screenName)
     signal cancelled()
 
@@ -27,8 +27,8 @@ Variants {
             doFreeze: root.freeze
             actionRecording: root.actionRecording
 
-            onRegionSelected: (globalX, globalY, w, h, screen, localX, localY) => {
-                root.selectedRegion(globalX, globalY, w, h, screen, localX, localY)
+            onRegionSelected: (globalX, globalY, w, h, screen, localX, localY, directlyToClipboard) => {
+                root.selectedRegion(globalX, globalY, w, h, screen, localX, localY, directlyToClipboard)
             }
 
             onOutputSelected: (screenName) => root.selectedMonitor(screenName);
