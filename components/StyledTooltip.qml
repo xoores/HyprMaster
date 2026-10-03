@@ -2,8 +2,6 @@ pragma ComponentBehavior: Bound
 
 import Quickshell
 import QtQuick
-import QtQuick.Layouts
-import QtQuick.Effects
 
 import "../config"
 import "../services"
@@ -13,8 +11,7 @@ LazyLoader {
     id: root
 
     required property Item anchorItem
-    //required property Item barRoot
-    property PanelWindow anchorWindow: window
+    property var anchorWindow: anchorItem.QsWindow.window
     property bool show: anchorItem.containsMouse
     required property string text
 
@@ -55,6 +52,9 @@ LazyLoader {
 
 
         anchor.window: root.anchorWindow
+        anchor.rect: root.anchorWindow
+                        ? Qt.rect(Math.round(root.anchorItem.QsWindow.itemPosition(root.anchorItem).x), Math.round(root.anchorWindow.height), root.anchorItem.width, 0)
+                        : Qt.rect(0, 0, 0, 0)
 
         Rectangle {
             id: content
@@ -98,12 +98,6 @@ LazyLoader {
             id: closeTimer
             interval: root.hideDuration
             onTriggered: root.keepAlive = false
-        }
-
-        Component.onCompleted: {
-            const pos = root.anchorWindow.mapFromItem(root.anchorItem, 0, 0)
-            anchor.rect.x = Math.round(pos.x)
-            anchor.rect.y = Math.round(root.anchorWindow.height)
         }
     }
 }

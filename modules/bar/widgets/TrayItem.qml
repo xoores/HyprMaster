@@ -73,8 +73,9 @@ MouseArea {
     QsMenuAnchor {
         id: menuAnchor
         menu: root.modelData?.menu
-        anchor.window: window
-        anchor.rect: window.mapFromItem(root, 0, root.height, root.width, root.width)
+        anchor.item: root
+        anchor.edges: Edges.Bottom
+        anchor.gravity: Edges.Bottom
     }
 
     IconImage {
