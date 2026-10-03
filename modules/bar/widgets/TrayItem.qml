@@ -38,6 +38,38 @@ MouseArea {
         }
     }
 
+    function iconCandidates(spec: string): var {
+        const prefix = "image://icon/";
+
+        if (!spec)
+            return [];
+
+        if (!spec.startsWith(prefix))
+            return [spec];
+
+        let id = spec.substring(prefix.length);
+        let path = "";
+
+        const pathIdx = id.indexOf("?path=");
+        if (pathIdx !== -1) {
+            path = id.substring(pathIdx + 6);
+            id = id.substring(0, pathIdx);
+        }
+
+        const name = id.substring(id.lastIndexOf("/") + 1);
+        const candidates = [];
+
+        if (path) {
+            for (const ext of ["png", "svg", "xpm"])
+                candidates.push("file://" + path + "/" + name + "." + ext);
+            candidates.push("file://" + path + "/" + name);
+        }
+
+        // Intentionally push "non-resolveable" icon so the QS falls back to the black/magenta placeholder
+        candidates.push(prefix + name);
+        return candidates;
+    }
+
     QsMenuAnchor {
         id: menuAnchor
         menu: root.modelData?.menu
@@ -49,38 +81,26 @@ MouseArea {
         id: icon
         asynchronous: true
         anchors.fill: parent
-        anchors.centerIn: parent
         visible: status === Image.Ready
-        smooth: true
         mipmap: true
+        backer.smooth: true
+
+        readonly property var candidates: root.iconCandidates(root.modelData?.icon ?? "")
+        property int candidateIndex: 0
+
+        source: candidates[candidateIndex] ?? ""
+
+        onCandidatesChanged: candidateIndex = 0
 
         onStatusChanged: {
-            if( icon.status == Image.Error ) {
-                console.warn(icon.source + ": Failed to load")
+            if (status !== Image.Error)
+                return;
+
+            if (candidateIndex < candidates.length - 1) {
+                candidateIndex += 1;
+            } else {
+                console.warn("Tray[" + root.modelData?.id + "]: no usable icon for '" + root.modelData?.icon + "'");
             }
-        }
-
-        source: {
-            let icon = root.modelData && root.modelData.icon;
-
-            if (typeof icon === 'string' || icon instanceof String) {
-                if (icon.includes("?path=")) {
-                    const split = icon.split("?path=");
-                    if (split.length !== 2)
-                        return icon;
-                    const name = split[0];
-                    const path = split[1];
-                    const fileName = name.substring(name.lastIndexOf("/") + 1);
-                    //console.log("ICON1=" + "file://" + path + "/" + fileName)
-                    return "file://" + path + "/" + fileName;
-                }
-                //console.log("ICON2=" + icon + " _ " + Quickshell.iconPath(icon))
-                //return Quickshell.iconPath(icon);
-                return icon;
-            }
-
-            console.warn("No icon for " + root.modelData.id)
-            return "";
         }
     }
 

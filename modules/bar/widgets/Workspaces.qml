@@ -15,8 +15,8 @@ import "../../../services"
 Rectangle {
     id: root
     required property HyprlandMonitor monitor
-    height: workspaces.implicitHeight
-    width: workspaces.implicitWidth
+    implicitHeight: workspaces.implicitHeight
+    implicitWidth: workspaces.implicitWidth
     color: "#4c7899"
 
     /*

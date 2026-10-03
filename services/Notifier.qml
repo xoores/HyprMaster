@@ -104,7 +104,10 @@ Singleton
                         body = body.replace(/^<a[^>]+>[^>]+>\n\n@/, "@")
                     }
 
+                    body = body.replace(/&lt;/g, "<") // HTML tag start <
+                    body = body.replace(/&gt;/g, ">") // HTML tag end >
                     body = body.replace(/\n/g, "<br>") // Need to convert \n to proper HTML entity
+
                     body = root.processEmojis( body )
                     console.log("NOTIFIER: '" + body + "'")
                 }
@@ -112,7 +115,7 @@ Singleton
                 var newActions = [];
                 if (notification.actions) {
                     for (var i = 0; i < notification.actions.length; i++) {
-                        console.log("NOTIFIER-ACTION: '" + notification.actions[i].text + "'")
+                        //console.log("NOTIFIER-ACTION: '" + notification.actions[i].text + "'")
                         newActions.push({
                         "text": notification.actions[i].text
                         });
@@ -134,7 +137,7 @@ Singleton
         readonly property Connections conn: Connections {
             target: notifComponent.notification ? notifComponent.notification.Retainable : null
             function onDropped(): void {
-                console.log("onDropped()")
+                //console.log("onDropped()")
                 root.notificationClosed(notifComponent);
                 const index = root.activeNotifications.indexOf(notifComponent);
                 if (index > -1) {

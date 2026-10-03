@@ -49,11 +49,6 @@ Rectangle {
             return false
         }
 
-        for( var x=0 ; x<root.notification.displayActions.length ; x++ ) {
-            var action = root.notification.displayActions[x]
-            console.log("N[" + x + "]: " + action.text)
-        }
-
         if( root.notification.displayActions.length == 1 ) {
             var txt = root.notification.displayActions[0].text
             if( txt == "Activate" || txt == "Show Inbox" ) {
@@ -77,6 +72,13 @@ Rectangle {
         }
 
         console.log("N> HAS relevant notifications!")
+
+        for( var x=0 ; x<root.notification.displayActions.length ; x++ ) {
+            var action = root.notification.displayActions[x]
+            console.log("N[" + x + "]: " + action.text)
+        }
+
+
         return true
     }
 

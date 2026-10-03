@@ -8,14 +8,10 @@ import Quickshell.Networking
 import "../config"
 import "../services"
 
-Item {
+Scope {
     id: root
-
-    //required property var modelData
-
     required property string host
     property int interval: 5 * 1000
-
     property bool is_ok: false
 
 

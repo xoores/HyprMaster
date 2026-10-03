@@ -16,7 +16,7 @@ StyledLabel {
     required property HyprlandMonitor monitor
     property HyprWorkspace ws: modelData.ws
 
-    property bool isActive: monitor.activeWorkspace?.id === ws.id
+    property bool isActive: monitor?.activeWorkspace?.id === ws.id
     //property string ws_name: model.ws.name
 
     padding: 2

@@ -11,7 +11,7 @@ import "../services"
 Text {
     id: root
 
-    readonly property var widget_config: model?.config
+    readonly property var widget_config: typeof model === "undefined" ? undefined : model?.config
     property int widget_debug: widget_config?.debug ?? 0
 
     leftPadding: widget_config?.padding ?? 5

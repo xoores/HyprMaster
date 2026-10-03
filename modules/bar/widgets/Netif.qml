@@ -31,7 +31,8 @@ StyledText {
     Process {
         id: iface_get_status
         running: root.iface !== "" ? true : false
-        command: ["ip", "-j", "-4", "addr", "show", "dev", root.iface, "scope", "global"]
+        //command: ["ip", "-j", "-4", "addr", "show", "dev", root.iface, "scope", "global"]
+        command: ["ip", "-j", "-4", "addr", "show", "dev", root.iface]
         stdout: StdioCollector {
             onStreamFinished: {
                 let stdout = text.trim()

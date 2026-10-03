@@ -33,6 +33,26 @@ StyledText {
     text: ""
 
 
+    /*
+    StyledText {
+        color: Config.appearance.color_fg
+        text: "5"
+        id: wifi_freq
+
+        leftPadding: 23
+        bottomPadding: 2
+
+        anchors.top: parent.top
+
+        font {
+            family: Config.appearance.font_family
+            pixelSize: Config.appearance.font_size-8 > 0 ? Config.appearance.font_size-8 : 1
+            bold: false
+        }
+    }
+    */
+
+
     function restart_query() {
         iface_get_status.signal(9) // kill existing
         iface_get_status.running = true

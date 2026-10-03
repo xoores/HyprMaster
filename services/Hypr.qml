@@ -102,7 +102,7 @@ Singleton
 
         for ( const w of Hyprland.toplevels.values ) {
             if( !w.workspace ) continue
-            if( w.workspace.id < 0 || !w.wayland.appId ) continue
+            if( w.workspace.id < 0 || !w.wayland?.appId ) continue
             var mw = findWorkspaceById( w.workspace.id )
             if( !mw ) {
                 console.warn("Invalid WS for toplevel")
@@ -184,11 +184,11 @@ Singleton
 
             } else if (n === "createworkspace") {
                 root.createWorkspaceById( event.data )
-                //Hyprland.refreshWorkspaces();
+                Hyprland.refreshWorkspaces();
 
             } else if (n === "destroyworkspace") {
                 root.deleteWorkspaceById( event.data )
-                //Hyprland.refreshWorkspaces();
+                Hyprland.refreshWorkspaces();
 
             } else if (["workspace", "moveworkspace", "activespecial", "focusedmon"].includes(n)) {
                 Hyprland.refreshWorkspaces();
