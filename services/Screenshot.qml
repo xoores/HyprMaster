@@ -78,10 +78,22 @@ Singleton {
 
                 // directlyToClipboard => skip satty & send image directly to clipboard (shortcut)
                 if( directlyToClipboard ) {
-                    command = ["bash", "-c", `grim -g "${geo}" - | wl-copy -t image/png`]
+                    //command = ["bash", "-c", `grim -g "${geo}" - | wl-copy -t image/png`]
 
+                    command = ["bash", "-c",
+                        `hyprctl eval 'hl.config({ cursor = { invisible = true } })'; sleep 0.1; ` +
+                        `grim -g "${geo}" - | wl-copy -t image/png; ` +
+                        `hyprctl eval 'hl.config({ cursor = { invisible = false } })';`]
                 } else {
-                    command = ["bash", "-c", `grim -g "${geo}" - | satty --filename - ${Config.screenshot.satty_parameters}`]
+                    //command = ["bash", "-c", `grim -g "${geo}" - | satty --filename - ${Config.screenshot.satty_parameters}`]
+
+                    command = ["bash", "-c",
+                        `I=$(mktemp --suffix=.png); ` +
+                        `hyprctl eval 'hl.config({ cursor = { invisible = true } })'; sleep 0.1; ` +
+                        `grim -g "${geo}" "$I"; ` +
+                        `hyprctl eval 'hl.config({ cursor = { invisible = false } })'; ` +
+                        `satty --filename "$I" ${Config.screenshot.satty_parameters}; ` +
+                        `rm -f "$I"`]
                 }
 
                 console.log("SCROT-CMD[IMAGE]: " + command)
