@@ -93,9 +93,11 @@ Singleton
     function refreshWindows() {
         root.workspaces.clear()
 
+        const sorted = Hyprland.workspaces.values
+            .filter(w => w.id >= 0)
+            .sort((a, b) => a.id - b.id)
 
-        for ( const w of Hyprland.workspaces.values ) {
-            if( w.id < 0 ) continue
+        for ( const w of sorted ) {
             var mw = hyprWorkspace.createObject(root, { ws: w });
             workspaces.append( { id: w.id, ws: mw} )
         }
@@ -113,6 +115,7 @@ Singleton
             mw.refresh_icons()
         }
     }
+
 
     /*
     // readonly property HyprKeyboard keyboard: extras.devices.keyboards.find(kb => kb.main) ?? null
