@@ -3,7 +3,6 @@
 //@ pragma Env QSG_RENDER_LOOP=threaded
 //@ pragma Env QT_QUICK_CONTROLS_STYLE=Basic
 //@ pragma Env QT_QUICK_FLICKABLE_WHEEL_DECELERATION=100000
-//@ pragma IconTheme Adwaita
 //@ pragma UseQApplication
 
 import QtQuick

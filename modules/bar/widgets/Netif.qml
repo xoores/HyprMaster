@@ -148,7 +148,7 @@ StyledText {
 
                 case Qt.MiddleButton:
                     if( actionm == "" ) return;
-                    console.info("exec->onClicked(MIDDLE)");
+                    console.info("exec->onClicked(MIDDLE): " + actionm);
                     Quickshell.execDetached(actionm);
                     break;
 

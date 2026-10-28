@@ -81,6 +81,7 @@ Singleton
         property real expireTimeout: 5000
         property int notifId: 0
         property var displayActions: []
+        property int defaultActionIndex: -1
 
         onNotificationChanged: {
                 if (!notification) return;
@@ -115,9 +116,14 @@ Singleton
                 var newActions = [];
                 if (notification.actions) {
                     for (var i = 0; i < notification.actions.length; i++) {
-                        //console.log("NOTIFIER-ACTION: '" + notification.actions[i].text + "'")
+                        const a = notification.actions[i];
+                        if (!a.text || a.text.trim() === "") {
+                            if (a.identifier === "default" || defaultActionIndex < 0) defaultActionIndex = i;
+                            continue;
+                        }
                         newActions.push({
-                        "text": notification.actions[i].text
+                            "text": a.text,
+                            "index": i
                         });
                     }
                 }

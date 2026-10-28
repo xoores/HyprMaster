@@ -68,6 +68,7 @@ Singleton {
     IdleInhibitor {
         enabled: props.enabled
         window: PanelWindow {
+            screen: Quickshell.screens[0] // When screens change, window may just disappear...
             implicitWidth: 1
             implicitHeight: 1
             color: "transparent"

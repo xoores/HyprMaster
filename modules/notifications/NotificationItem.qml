@@ -93,18 +93,27 @@ Rectangle {
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         onClicked: event => {
             if (event.button === Qt.LeftButton) {
-                if( root.action_activate_index >= 0 ) {
-                    var act = root.notification.displayActions[root.action_activate_index]
-                    console.log("NOTIFICATION ACTIVATE DEFAULT: " + act.text)
-                    root.actionInvoked(root.action_activate_index)
-                    return
-                }
+               // Labelled action
+               if( root.action_activate_index >= 0 ) {
+                   var act = root.notification.displayActions[root.action_activate_index]
+                   console.log("NOTIFICATION ACTIVATE (labeled): " + act.text + " -> raw " + act.index)
+                   root.actionInvoked(act.index)
+                   return
+               }
 
-                console.log("NOTIFICATION ACTIVATE")
-                for( const n of root.notification.displayActions ) {
-                    console.log(">>" + n.text ?? "NO_LABEL"  )
-                }
+               // Unlabelled (default) action
+               const defIdx = root.notification?.defaultActionIndex ?? -1
+               if( defIdx >= 0 ) {
+                   console.log("NOTIFICATION ACTIVATE (default): raw " + defIdx)
+                   root.actionInvoked(defIdx)
+                   return
+               }
 
+               // No action
+               console.log("NOTIFICATION ACTIVATE: no default action")
+               for( const n of root.notification.displayActions ) {
+                   console.log(">>" + (n.text ?? "NO_LABEL"))
+               }
 
             } else {
                 console.log("Notification dismiss by right click")
@@ -280,7 +289,6 @@ Rectangle {
                     id: b
                     required property var modelData
                     required property int index
-                    visible: b.modelData.text !== ""
 
                     contentItem: Text {
                         text: b.modelData.text ?? ""
@@ -297,8 +305,8 @@ Rectangle {
                     Layout.fillWidth:  true
                     //textElide: Text.ElideRight
                     onClicked: {
-                        console.log("NOTIF-ACTION[" + root.notification?.appName + "]: " + index + " (" + modelData?.text + ")")
-                        root.actionInvoked(index)
+                        console.log("NOTIF-ACTION[" + root.notification?.appName + "]: " + b.modelData.index + " (" + modelData?.text + ")")
+                        root.actionInvoked(b.modelData.index)
                     }
 
                     //topLeftRadius: index === 0 ? groupRadius : groupRadius / root.innerRadiusDiv
