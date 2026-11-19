@@ -47,6 +47,7 @@ RowLayout {
             DelegateChoice { roleValue: "wifi";            delegate: Wifi {} }
             DelegateChoice { roleValue: "inetmon";         delegate: InetMon {} }
             DelegateChoice { roleValue: "notifindicator";  delegate: NotifIndicator {} }
+            DelegateChoice { roleValue: "nmconnection";    delegate: NMConnection {} }
             DelegateChoice { roleValue: "workspaces";      delegate: Workspaces { monitor: bar.monitor } }
         }
     }

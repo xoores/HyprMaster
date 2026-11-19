@@ -27,6 +27,8 @@ JsonObject {
 
             console.debug("" + widgets.objectName + "[" + x + "]: " + w.type)
 
+            if( w.type[0] == "#" ) continue;
+
             switch( w.type ) {
                 case "battery":     // Simple battery indicator
                 case "bluetooth":   // Bluetooth indicator w/ toggles
@@ -43,6 +45,7 @@ JsonObject {
                 case "netif":       // Generic interface status (with IP)
                 case "notifindicator": // Notification indicator/DND toggle
                 case "inetmon":     // Internet connection / ICMP monitor
+                case "nmconnection":// Networkmanager connection
                 case "tray": // ....
                     widgets.append({ type: w.type, config: w.config ?? {}  })
                     break;
