@@ -58,7 +58,7 @@ Singleton {
         actionRecording: root._actionRecording
         active: root._active
 
-        onSelectedRegion: (globalX, globalY, w, h, screen, localX, localY, directlyToClipboard) => {
+        onSelectedRegion: (globalX, globalY, w, h, screen, localX, localY, directlyToClipboard, frozenPath, frozenScale) => {
             root._active = false
             const geo = `${Math.round(globalX)},${Math.round(globalY)} ${Math.round(w)}x${Math.round(h)}`
 
@@ -76,25 +76,41 @@ Singleton {
             } else {
                 var command = "";
 
-                // directlyToClipboard => skip satty & send image directly to clipboard (shortcut)
-                if( directlyToClipboard ) {
+                if( frozenPath ) {
+                    const s = frozenScale
+                    const crop = `${Math.round(w*s)}x${Math.round(h*s)}+${Math.round(localX*s)}+${Math.round(localY*s)}`
+
+                    if( directlyToClipboard ) {
+                        command = ["bash", "-c",
+                                    `magick "${frozenPath}" -crop ${crop} +repage png:- | wl-copy -t image/png; ` +
+                                    `rm -f "${frozenPath}"`]
+                    } else {
+                        command = ["bash", "-c",
+                                    `I=$(mktemp --suffix=.png); ` +
+                                    `magick "${frozenPath}" -crop ${crop} +repage "$I"; ` +
+                                    `rm -f "${frozenPath}"; ` +
+                                    `satty --filename "$I" ${Config.screenshot.satty_parameters}; ` +
+                                    `rm -f "$I"`]
+                    }
+                } else if( directlyToClipboard ) {
                     //command = ["bash", "-c", `grim -g "${geo}" - | wl-copy -t image/png`]
 
                     command = ["bash", "-c",
-                        `hyprctl eval 'hl.config({ cursor = { invisible = true } })'; sleep 0.1; ` +
-                        `grim -g "${geo}" - | wl-copy -t image/png; ` +
-                        `hyprctl eval 'hl.config({ cursor = { invisible = false } })';`]
+                                `hyprctl eval 'hl.config({ cursor = { invisible = true } })'; sleep 0.1; ` +
+                                `grim -g "${geo}" - | wl-copy -t image/png; ` +
+                                `hyprctl eval 'hl.config({ cursor = { invisible = false } })';`]
                 } else {
                     //command = ["bash", "-c", `grim -g "${geo}" - | satty --filename - ${Config.screenshot.satty_parameters}`]
 
                     command = ["bash", "-c",
-                        `I=$(mktemp --suffix=.png); ` +
-                        `hyprctl eval 'hl.config({ cursor = { invisible = true } })'; sleep 0.1; ` +
-                        `grim -g "${geo}" "$I"; ` +
-                        `hyprctl eval 'hl.config({ cursor = { invisible = false } })'; ` +
-                        `satty --filename "$I" ${Config.screenshot.satty_parameters}; ` +
-                        `rm -f "$I"`]
+                                `I=$(mktemp --suffix=.png); ` +
+                                `hyprctl eval 'hl.config({ cursor = { invisible = true } })'; sleep 0.1; ` +
+                                `grim -g "${geo}" "$I"; ` +
+                                `hyprctl eval 'hl.config({ cursor = { invisible = false } })'; ` +
+                                `satty --filename "$I" ${Config.screenshot.satty_parameters}; ` +
+                                `rm -f "$I"`]
                 }
+
 
                 console.log("SCROT-CMD[IMAGE]: " + command)
                 Quickshell.execDetached(command)

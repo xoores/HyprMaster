@@ -20,7 +20,8 @@ PanelWindow {
     // regionSelected -> user has manually selected some region (either click-and-drag or a window)
     // outputSelected -> usesr has selected whole screen
     // cancelled -> Self explainatory
-    signal regionSelected(real globalX, real globalY, real w, real h, var screen, real localX, real localY, bool directlyToClipboard)
+    signal regionSelected(real globalX, real globalY, real w, real h, var screen, real localX, real localY,
+                          bool directlyToClipboard, string frozenPath, real frozenScale)
     signal outputSelected(string screenName)
     signal cancelled()
 
@@ -45,6 +46,8 @@ PanelWindow {
     property bool           hasDragResult: false  // true once a drag finishes
     property string         hyprlandMonitorName: "" // For logging purposes
     property bool           freezeReady: false
+    property var            frozenResult: null
+    property real           frozenScale: 1
 
     onHoveredClientChanged:             dimCanvas.requestPaint()
     onIsDraggingChanged:                dimCanvas.requestPaint()
@@ -75,6 +78,12 @@ PanelWindow {
                         ((bc.fullscreen !== 0) - (ac.fullscreen !== 0)) ||
                         (bc.floating - ac.floating);
             });
+    }
+
+    function saveFrozen() {
+        if( !frozenResult ) return ""
+        const p = `/tmp/hyprmaster-freeze-${targetScreen.name}.bmp`
+        return frozenResult.saveToFile(p) ? p : ""
     }
 
     function findClientAt(localX, localY) {
@@ -146,11 +155,21 @@ PanelWindow {
         repeat: false
         onTriggered: {
             if( !screencopyLoader.item ) return
+            const sc = screencopyLoader.item
+            sc.grabToImage(function(result) {
+                overlay.frozenResult = result
+                overlay.frozenScale = sc.sourceSize.width / overlay.width
+                frozenBg.source = result.url
+                overlay.freezeReady = true
+                dimCanvas.requestPaint()
+            })
+            /*
             screencopyLoader.item.grabToImage(function(result) {
                 frozenBg.source = result.url
                 overlay.freezeReady = true
                 dimCanvas.requestPaint()
             })
+            */
         }
     }
 
@@ -261,11 +280,14 @@ PanelWindow {
                 dimCanvas.requestPaint()
             } else if (overlay.hoveredClient) {
                 const c = overlay.hoveredClient
+                const { at: [cx, cy], size: [cw, ch] } = c.lastIpcObject
                 overlay.regionSelected(
-                    c.at.x, c.at.y, c.size.width, c.size.height,
+                    cx, cy, cw, ch,
                     overlay.targetScreen,
-                    c.at.x - overlay.vOriginX,
-                    c.at.y - overlay.vOriginY
+                    cx - overlay.vOriginX,
+                    cy - overlay.vOriginY,
+                    false,
+                    overlay.saveFrozen(), overlay.frozenScale
                 )
             }
         }
@@ -298,14 +320,15 @@ PanelWindow {
             // callLater is necessary because we need to give a little bit of time to dimRectangle and hudRectangle
             // to disappear. If we emit the signal without that, both rectangles would be in the creenshot.
             Qt.callLater(() => {
-                    overlay.regionSelected(
-                     overlay.vOriginX + sel.normX,
-                     overlay.vOriginY + sel.normY,
-                     sel.normW, sel.normH,
-                     overlay.targetScreen,
-                     sel.normX, sel.normY,
-                     directToClipboard)
-                    })
+                overlay.regionSelected(
+                    overlay.vOriginX + sel.normX,
+                    overlay.vOriginY + sel.normY,
+                    sel.normW, sel.normH,
+                    overlay.targetScreen,
+                    sel.normX, sel.normY,
+                    directToClipboard,
+                    overlay.saveFrozen(), overlay.frozenScale)
+            })
 
         }
     }
