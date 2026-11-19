@@ -21,9 +21,10 @@ StyledText {
     text: Pw.get_icon()
     color: Pw.muted ? Config.appearance.color_fg_disabled : Config.appearance.color_fg_active
 
-    property int value: Math.round((value_max/Pw.volume_max)*Pw.volume);
+    //property int value: Math.round((value_max/Pw.volume_max)*Pw.volume);
     property int value_max: 5000;
     property string sink_name: (Pw.sink?.nickname || Pw.sink?.description || Pw.sink?.name || "?")
+    property real wheel_acc: 0
 
     Behavior on color {
         CAnim { }
@@ -66,15 +67,18 @@ StyledText {
         }
 
         onWheel: (wheel)=> {
-            if( wheel.angleDelta.y == 0 ) return;
+            if (wheel.angleDelta.y == 0) return;
 
-            root.value -= wheel.angleDelta.y // -= because we want numbers to go up when scrolling up...
-            if( root.value > root.value_max ) root.value = root.value_max // Cap max
-            if( root.value < 0 ) root.value = 0 // Limit min
-            const vol_value = Math.round(root.value * (Pw.volume_max/root.value_max)) // Fit to the Brightnessctl range (0-X)
-            Pw.set(vol_value)
+            root.wheel_acc -= wheel.angleDelta.y
+            const unit = root.value_max / Pw.volume_max
+            const steps = Math.trunc(root.wheel_acc / unit)
 
-            if( root.widget_debug ) console.debug("pw->onWheel(" + dir + ") " + wheel.angleDelta)
+            if (steps == 0) return;
+            root.wheel_acc -= steps * unit
+
+            Pw.set(Math.max(0, Math.min(Pw.volume_max, Pw.volume + steps)))
+
+            if( root.widget_debug ) console.debug("pw->onWheel() " + wheel.angleDelta)
         }
 
 

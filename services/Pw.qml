@@ -19,7 +19,7 @@ Singleton
     property PwNode source: Pipewire.defaultAudioSource
 
     property int volume_max: 100
-    property int volume: sink?.audio?.volume*volume_max
+    property int volume: Math.round((sink?.audio?.volume ?? 0) * volume_max)
     property bool muted: sink?.audio?.muted ?? false
     property bool mic_muted: source?.audio?.muted ?? false
     property bool mic_in_use: false
@@ -43,7 +43,7 @@ Singleton
         target: Pipewire?.defaultAudioSource?.audio
 
         function onMutedChanged() {
-            root.mic_muted = root.source.audio.muted
+            //root.mic_muted = root.source.audio.muted
             root.sourceVolumeChanged( 0, root.mic_muted, root.get_mic_icon())
         }
     }
@@ -75,12 +75,12 @@ Singleton
         target: Pipewire?.defaultAudioSink?.audio
 
         function onVolumeChanged() {
-            root.volume = root.sink.audio.volume*root.volume_max
+            //root.volume = root.sink.audio.volume*root.volume_max
             root.sinkVolumeChanged( root.volume, root.muted, root.get_icon())
 
         }
         function onMutedChanged() {
-            root.muted = root.sink.audio.muted
+            //root.muted = root.sink.audio.muted
             root.sinkVolumeChanged( root.volume, root.muted, root.get_icon())
         }
     }
@@ -119,7 +119,7 @@ Singleton
 
         //console.debug("PwSvc: set(" + level + ") for " + sink.name)
 
-        root.volume = level;
+        //root.volume = level;
         //root.sink.audio.volume = root.volume/root.volume_max
         Quickshell.execDetached(["wpctl", "set-volume", root.sink.id, (level / root.volume_max)])
     }
