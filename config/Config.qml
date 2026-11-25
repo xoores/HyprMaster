@@ -56,10 +56,8 @@ Singleton
 
             ip_resolver = config.general.ip_resolver ?? ""
 
-            for ( const a of config?.general?.icmp_monitor_hosts ) {
-                icmp_monitor_hosts.push( a )
-            }
-
+            // Forgot to clear the damn list...
+            icmp_monitor_hosts = config?.general?.icmp_monitor_hosts ?? []
 
             console.log("[HyprMaster] Config loaded successfully")
         } catch (e) {

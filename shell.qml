@@ -3,6 +3,7 @@
 //@ pragma Env QSG_RENDER_LOOP=threaded
 //@ pragma Env QT_QUICK_CONTROLS_STYLE=Basic
 //@ pragma Env QT_QUICK_FLICKABLE_WHEEL_DECELERATION=100000
+//@ pragma Env QT_LOGGING_RULES=qt.qpa.wayland.textinput=false
 //@ pragma UseQApplication
 
 import QtQuick
@@ -34,7 +35,7 @@ ShellRoot {
             console.info("Starting up...")
             root.notificationsInstance = createGlobalWindow(notificationsComponent, "Notifications");
 
-            ICMP.init()
+            //ICMP.init()
         }
 
 
