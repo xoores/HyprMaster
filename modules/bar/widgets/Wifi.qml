@@ -116,8 +116,8 @@ StyledText {
 
                             if( ip === undefined ) {
                                 // No IP address
-                                root.text = icon + " no_address"
-                                root.text_extended = root.text
+                                root.text_normal = icon + " no_address"
+                                root.text_extended = root.text_normal
                                 root.color = Config.appearance.color_fg_warning
                             } else {
                                 let x = "a";

@@ -48,7 +48,7 @@ StyledText {
                     break;
 
                 case Qt.LeftButton:
-                    if( actionr == "" ) {
+                    if( actionl == "" ) {
                         Notifications.NotificationArea.toggleWindow(bar.screen);
                         return;
                     }

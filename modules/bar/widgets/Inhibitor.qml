@@ -15,6 +15,7 @@ import "../../"
 
 StyledText {
     id: root
+    required property var model
 
     text: {
         if( Screenshot.isRecording ) return "󰑋";

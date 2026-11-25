@@ -57,7 +57,7 @@ RowLayout {
                     case Qt.MiddleButton:
                         if( actionm == "" ) {
                             console.info("bt->onClicked(MIDDLE) -> (default action)")
-                            if( Bluetooth.defaultAdapter === undefined ) return;
+                            if( !Bluetooth.defaultAdapter ) return;
                             const bt_target_state = !Bluetooth.defaultAdapter.enabled
 
                             console.info("Bluetooth: Toggling (" + bt_target_state + ")")

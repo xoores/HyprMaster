@@ -63,15 +63,17 @@ StyledText {
                         case "UNKNOWN":
                             root.text = "UP"
                             const ip = iface.addr_info[0];
-                            const ip_split = ip.local.split(".")
-                            let ip_hex = parseInt(ip_split[0]).toString(16) + "" + parseInt(ip_split[1]).toString(16)
-                            ip_hex += "" + parseInt(ip_split[2]).toString(16) + "" + parseInt(ip_split[3]).toString(16)
 
                             if( ip === undefined ) {
                                 // No IP address
-                                root.text = root.icon_up + " no_address"
+                                root.text_normal = root.icon_up + " no_address"
+                                root.text_extended = root.text_normal
                                 root.color = Config.appearance.color_fg_warning
                             } else {
+                                const ip_split = ip.local.split(".")
+                                let ip_hex = parseInt(ip_split[0]).toString(16) + "" + parseInt(ip_split[1]).toString(16)
+                                ip_hex += "" + parseInt(ip_split[2]).toString(16) + "" + parseInt(ip_split[3]).toString(16)
+
                                 root.text_normal = root.icon_up;// + ip.local + "/" + ip_hex;
                                 root.text_extended = root.icon_up + " " + ip.local + "<sub>/" + ip.prefixlen + "</sub>"
 

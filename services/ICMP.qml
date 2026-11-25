@@ -48,7 +48,7 @@ Singleton {
     Timer {
         id: tmr_monitors
         interval: 1000
-        running: monitors.instances.length > 0
+        running: true
         repeat: true
         onTriggered: {
             var h = ""
@@ -86,7 +86,7 @@ Singleton {
 
             //if( ok_count == root.host_monitors.length ) {
             if( ok_count == monitors.instances.length ) {
-                root.aditional_hosts = "<font color=\"" + Config.appearance.color_fg_good + "\">" + ok_count + "</span>"
+                root.aditional_hosts = "<font color=\"" + Config.appearance.color_fg_good + "\">" + ok_count + "</font>"
             } else {
                 root.aditional_hosts = h
             }

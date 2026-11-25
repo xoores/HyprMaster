@@ -45,9 +45,7 @@ StyledText {
         const icons = ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
         const icons_charging = [ "󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅" ]
         const perc = Math.round(UPower.displayDevice.percentage * 100);
-        const icon_id = Math.floor(perc/icons.length) - 1
-        // icon_id =- 1;
-        //if( icon_id >= icons.length ) icon_id = icons.length-1;
+        const icon_id = Math.max(0, Math.floor(perc/icons.length) - 1);
 
         const charging = [UPowerDeviceState.Charging, UPowerDeviceState.FullyCharged, UPowerDeviceState.PendingCharge].includes(UPower.displayDevice.state);
         let icon = charging ? icons_charging[icon_id] : icons[icon_id]

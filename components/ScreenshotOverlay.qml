@@ -112,6 +112,8 @@ PanelWindow {
             }
         }
         //console.log(`[${hyprlandMonitorName}]: NO VALID CLIENT`)
+        sel.w = 0
+        sel.h = 0
         return null
     }
 
@@ -233,7 +235,10 @@ PanelWindow {
             : (overlay.hoveredClient ? Qt.PointingHandCursor : Qt.CrossCursor)
 
         onExited: {
-            if (!overlay.isDragging) overlay.hoveredClient = null
+            if (overlay.isDragging || overlay.hasDragResult) return
+            overlay.hoveredClient = null
+            sel.w = 0
+            sel.h = 0
         }
 
         onPressed: (mouse) => {
@@ -241,13 +246,15 @@ PanelWindow {
                 overlay.cancelled()
                 return
             }
+            overlay.isDragging    = false
+            overlay.hasDragResult = false
+
+            overlay.hoveredClient = overlay.findClientAt(mouse.x, mouse.y)
+
             sel.startX = mouse.x
             sel.startY = mouse.y
             sel.w = 0
             sel.h = 0
-            overlay.isDragging    = false
-            overlay.hasDragResult = false
-            overlay.hoveredClient = null
         }
 
         onPositionChanged: (mouse) => {

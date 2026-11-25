@@ -69,7 +69,8 @@ StyledText {
 
                 if( ip === undefined ) {
                     // No IP address
-                    root.text = root.icon_up + " no_address"
+                    root.text_normal = root.icon_up + " no_address"
+                    root.text_extended = root.text_normal
                     root.color = Config.appearance.color_fg_warning
                 } else {
                     const ip_split = ip.split(".")
@@ -206,7 +207,7 @@ StyledText {
 
             }
 
-            if( root.iface.length ) iface_get_status.running = true
+            if( root.conn_name.length ) iface_get_status.running = true
         }
     }
 

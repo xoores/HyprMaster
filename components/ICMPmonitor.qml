@@ -36,23 +36,12 @@ Scope {
         id: exec_ip_resolver
         running: root.host.length ? true : false
         command: ["ping", "-c1", "-n", "-q", "-W1", root.host ]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                //console.log(root.host + ">" + text)
 
-                let stdout = text.trim()
-                if( stdout.length < 7 ) {
-                    //root.color = Config.appearance.color_fg_error
-                    //root.text = root.host[0]
-                    //tooltip.text = "No internet"
-                    root.is_ok = false
-                    return
-                }
-
-                root.is_ok = true
-                //root.color = Config.appearance.color_fg_good
-            }
-
+        // I'm an idiot - the previous version falsely flagged unreachable hosts as OK since
+        // ping always prints out a summary (which is obviously longer than 7 characters)... Ouch
+        onExited: (exitCode, exitStatus) => {
+            //console.info("ICMP[" + root.host + "]: exitStatus=" + exitStatus + "  exitCode=" + exitCode)
+            root.is_ok = (exitStatus === 0 && exitCode === 0)
         }
     }
 

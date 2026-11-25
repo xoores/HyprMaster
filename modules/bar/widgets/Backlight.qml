@@ -22,6 +22,7 @@ StyledText {
     property bool scroll_latch: false
     property int scroll_latch_duration: widget_config?.scroll_delay ?? 0
     property int value: Math.round((Brightnessctl.bri/Brightnessctl.bri_max)*root.value_max)
+    property real wheel_acc: 0
     property int value_max: 5000;
 
     text: Brightnessctl.get_icon()
@@ -43,9 +44,11 @@ StyledText {
         running: false
         repeat: false
         onTriggered: {
-            const bri_value = Math.round(root.value * (Brightnessctl.bri_max/root.value_max)) // Fit to the Brightnessctl range (0-X)
+            const steps = Math.trunc(root.wheel_acc)
+            if( steps == 0 ) return
+            root.wheel_acc -= steps
 
-            Brightnessctl.set(bri_value)
+            Brightnessctl.set(Math.max(0, Math.min(Brightnessctl.bri_max, Brightnessctl.bri + steps)))
         }
     }
 
@@ -94,13 +97,10 @@ StyledText {
                 dir = "DOWN"
             }
 
-
-            root.value -= wheel.angleDelta.y // -= because we want numbers to go up when scrolling up...
-            if( root.value > root.value_max ) root.value = root.value_max // Cap max
-            if( root.value < 0 ) root.value = 0 // Limit min
-            if( root.widget_debug ) console.debug("bt->onWheel(" + dir + ") " + wheel.angleDelta + " -> " + root.value)
+            // Same problems as Volume.qml - since I'm lazy and just copied it :)
+            root.wheel_acc -= wheel.angleDelta.y * (Brightnessctl.bri_max / root.value_max)
+            if( root.widget_debug ) console.debug("backlight->onWheel() " + wheel.angleDelta + " -> acc " + root.wheel_acc)
             tmr_commit.running = true
-
         }
 
         StyledTooltip {
