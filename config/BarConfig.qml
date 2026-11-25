@@ -41,11 +41,12 @@ JsonObject {
                 case "microphone":  // Microphone indicator (using Pipewire connection)
                 case "volume_ext":  // Volume indicator (using external commands)
                 case "workspaces":  // Hyprland workspaces list
-                case "wifi":        // Wifi status w/ IP & SSID
-                case "netif":       // Generic interface status (with IP)
+                case "wifi":        // Wifi status w/ IP & SSID <DEPRECATED>
+                case "netif":       // Generic interface status (with IP) <DEPRECATED>
                 case "notifindicator": // Notification indicator/DND toggle
                 case "inetmon":     // Internet connection / ICMP monitor
-                case "nmconnection":// Networkmanager connection
+                case "nmconnection":// Networkmanager connection <DEPRECATED>
+                case "networkmanager":// Networkmanager connection / device
                 case "tray": // ....
                     widgets.append({ type: w.type, config: w.config ?? {}  })
                     break;

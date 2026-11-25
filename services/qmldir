@@ -6,3 +6,4 @@ singleton Notifier 1.0 Notifier.qml
 singleton PublicIP 1.0 PublicIP.qml
 singleton ICMP 1.0 ICMP.qml
 singleton Screenshot 1.0 Screenshot.qml
+singleton NM 1.0 NM.qml

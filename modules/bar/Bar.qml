@@ -44,10 +44,11 @@ RowLayout {
             DelegateChoice { roleValue: "volume";          delegate: Volume {} }
             DelegateChoice { roleValue: "microphone";      delegate: Microphone {} }
             DelegateChoice { roleValue: "volume_ext";      delegate: VolumeExt {} }
-            DelegateChoice { roleValue: "wifi";            delegate: Wifi {} }
-            DelegateChoice { roleValue: "inetmon";         delegate: InetMon {} }
+            DelegateChoice { roleValue: "wifi";            delegate: Wifi {} } // DEPRECATED
+            DelegateChoice { roleValue: "inetmon";         delegate: InetMon {} } // DEPRECATED
             DelegateChoice { roleValue: "notifindicator";  delegate: NotifIndicator {} }
-            DelegateChoice { roleValue: "nmconnection";    delegate: NMConnection {} }
+            DelegateChoice { roleValue: "nmconnection";    delegate: NMConnection {} } // DEPRECATED
+            DelegateChoice { roleValue: "networkmanager";  delegate: NetworkManager {} }
             DelegateChoice { roleValue: "workspaces";      delegate: Workspaces { monitor: bar.monitor } }
         }
     }
