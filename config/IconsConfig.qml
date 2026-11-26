@@ -1,10 +1,12 @@
 import Quickshell.Io
 import QtQuick
 
+import "ApplicationIcons.js" as AppIcons
+
 JsonObject {
     id: root
 
-    property var app_icons: []
+    property var app_icons: Object.assign({}, AppIcons.APP_ICONS)
     property var workspace_icons: []
 
     function get_workspace_icon( ws_id: int ): string {
@@ -16,17 +18,11 @@ JsonObject {
     }
 
     function get_app_icon( app_class: string ): string {
-        var icon="?"
-
-        // Try looking up icon - save "default" one in the first loop
-        // so we don't have to iterate twice.
-        for ( const a of root.app_icons ) {
-            if ( app_class == a.class ) return a.icon
-            if ( a.class == "_default" ) icon=a.icon
-        }
+        const icon = root.app_icons[app_class]
+        if ( icon !== undefined ) return icon
 
         console.warn("Window class without an icon: '" + app_class + "'")
-        return icon
+        return root.app_icons["_default"] ?? "?"
     }
 
 
@@ -34,12 +30,14 @@ JsonObject {
         if( !cfg ) return
         console.log(`CFG[ICONS]: Loading`)
 
-
         // Load icons...
-        for ( const a of cfg?.app_icons ) {
+
+        const apps = Object.assign({}, AppIcons.APP_ICONS)
+        for ( const a of cfg?.app_icons ?? [] ) {
             //console.log( "ICON[" +  a.class + "]='" + a.icon + "'" )
-            root.app_icons.push( { class: a.class, icon: a.icon } )
+            apps[a.class] = a.icon
         }
+        root.app_icons = apps
 
         for ( const a of cfg?.workspace_icons )  {
             //console.log( "WS-ICON[" +  a.id + "]='" + a.icon + "'" )
